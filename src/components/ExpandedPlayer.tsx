@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { usePlayer } from '@/contexts/PlayerContext';
-import { getImg, getArtistStr, fmtTime, getUrlForQuality, getAudioUrl, getSongRingtone, decodeHtml } from '@/lib/api';
-import { ChevronDown, Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, Mic, ListOrdered, Heart, Download, Sliders, Bell, Power } from 'lucide-react';
+import { getImg, getArtistStr, fmtTime, getUrlForQuality, getAudioUrl, decodeHtml } from '@/lib/api';
+import { ChevronDown, Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, Mic, ListOrdered, Heart, Download, Sliders, Power } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -38,23 +38,6 @@ const ExpandedPlayer = () => {
     seek(p * (duration || 0));
   };
 
-  const handleRingtone = async () => {
-    toast.info('Fetching ringtone…');
-    try {
-      const res = await getSongRingtone(currentSong.id);
-      if (res?.data?.previewUrl) {
-        window.open(res.data.previewUrl, '_blank');
-        toast.success('Ringtone preview opened!');
-      } else if (res?.data?.url) {
-        window.open(res.data.url, '_blank');
-      } else {
-        toast.error('Ringtone not available');
-      }
-    } catch {
-      toast.error('Ringtone not available');
-    }
-  };
-
   const handleDownload = async () => {
     const audioUrl = getUrlForQuality(currentSong, preferredQuality) || getAudioUrl(currentSong, preferredQuality);
     if (!audioUrl) { toast.error('No audio URL'); return; }
@@ -85,10 +68,28 @@ const ExpandedPlayer = () => {
     { icon: Mic, action: handleLyrics, label: 'Lyrics', active: false },
     { icon: ListOrdered, action: () => setQueueOpen(true), label: 'Queue', active: false },
     { icon: Heart, action: () => toggleLike(currentSong), label: 'Like', active: liked },
-    { icon: Bell, action: handleRingtone, label: 'Ringtone', active: false },
   ];
 
   const tabs = ['Player', 'Equalizer'];
+
+  // Horizontal swipe to toggle Equalizer tab (high sensitivity)
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    touchStart.current = { x: t.clientX, y: t.clientY };
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const s = touchStart.current;
+    if (!s) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - s.x;
+    const dy = t.clientY - s.y;
+    if (Math.abs(dx) > 30 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+      if (dx < 0) { setShowEqualizer(true); setActiveTab(1); }
+      else { setShowEqualizer(false); setActiveTab(0); }
+    }
+    touchStart.current = null;
+  };
 
   return (
     <motion.div
@@ -96,9 +97,13 @@ const ExpandedPlayer = () => {
       animate={{ y: 0 }}
       exit={{ y: '100%' }}
       transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
       className="fixed inset-0 z-[500] flex flex-col overflow-hidden"
       style={{
-        background: 'linear-gradient(180deg, hsl(250 20% 8%) 0%, hsl(340 30% 8%) 40%, hsl(25 30% 6%) 70%, hsl(250 22% 4%) 100%)',
+        backgroundImage: `linear-gradient(180deg, hsla(250,20%,4%,0.55), hsla(250,20%,4%,0.85)), var(--poster-bg, none)`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
       }}
     >
       <div className="relative flex-1 flex flex-col items-center px-4 sm:px-8 lg:px-16 pt-5 pb-4 overflow-y-auto">
