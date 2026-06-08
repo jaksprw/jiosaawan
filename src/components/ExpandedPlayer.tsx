@@ -100,24 +100,32 @@ const ExpandedPlayer = () => {
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
       className="fixed inset-0 z-[500] flex flex-col overflow-hidden"
-      style={{
-        backgroundImage: `linear-gradient(180deg, hsla(250,20%,4%,0.55), hsla(250,20%,4%,0.85)), var(--poster-bg, none)`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
     >
-      <div className="relative flex-1 flex flex-col items-center px-4 sm:px-8 lg:px-16 pt-5 pb-4 overflow-y-auto">
+      {/* Blurred poster backdrop */}
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{
+          backgroundImage: 'var(--poster-bg, none)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          filter: 'blur(70px) saturate(180%) contrast(1.3) brightness(0.6)',
+          transform: 'scale(1.3)',
+        }}
+      />
+      <div aria-hidden className="absolute inset-0 bg-black/35" />
+      <div className="relative flex-1 flex flex-col items-center px-4 sm:px-8 lg:px-16 pt-5 pb-4 overflow-y-auto z-10">
         <div className="w-10 h-1 rounded-full bg-muted-foreground/30 mb-4 flex-shrink-0" />
 
         {/* Header */}
         <div className="w-full max-w-lg flex items-center justify-between mb-4">
-          <button onClick={() => setExpandedOpen(false)} className="w-10 h-10 rounded-full bg-gradient-to-br from-secondary/50 to-secondary/20 flex items-center justify-center hover:from-secondary/60 transition-all">
+          <button onClick={() => setExpandedOpen(false)} className="w-10 h-10 rounded-full glass-icon flex items-center justify-center">
             <ChevronDown className="w-5 h-5 text-white" />
           </button>
           <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">Now Playing</span>
           <button
             onClick={() => { setShowEqualizer(!showEqualizer); setActiveTab(showEqualizer ? 0 : 1); }}
-            className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${showEqualizer ? 'bg-gradient-to-br from-primary to-primary/70 text-primary-foreground' : 'bg-gradient-to-br from-secondary/50 to-secondary/20 text-white hover:from-secondary/60'}`}
+            className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${showEqualizer ? 'glass-pill bg-primary/70 text-white' : 'glass-icon text-white'}`}
           >
             <Sliders className="w-4 h-4" />
           </button>
