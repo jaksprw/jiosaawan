@@ -63,7 +63,7 @@ const LanguageSongsSection = ({ language, emoji, icon, gradient }: LanguageSongs
             {icon}
           </div>
           <h2 className="text-base font-bold text-foreground" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-            {emoji} {language} Hits
+            {language} Hits
           </h2>
         </div>
       </div>

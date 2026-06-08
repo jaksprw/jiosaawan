@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { usePlayer } from '@/contexts/PlayerContext';
-import { getImg, getArtistStr, fmtTime, getUrlForQuality, getAudioUrl, getSongRingtone, decodeHtml } from '@/lib/api';
-import { ChevronDown, Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, Mic, ListOrdered, Heart, Download, Sliders, Bell, Power } from 'lucide-react';
+import { getImg, getArtistStr, fmtTime, getUrlForQuality, getAudioUrl, decodeHtml } from '@/lib/api';
+import { ChevronDown, Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, Mic, ListOrdered, Heart, Download, Sliders, Power } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -38,23 +38,6 @@ const ExpandedPlayer = () => {
     seek(p * (duration || 0));
   };
 
-  const handleRingtone = async () => {
-    toast.info('Fetching ringtone…');
-    try {
-      const res = await getSongRingtone(currentSong.id);
-      if (res?.data?.previewUrl) {
-        window.open(res.data.previewUrl, '_blank');
-        toast.success('Ringtone preview opened!');
-      } else if (res?.data?.url) {
-        window.open(res.data.url, '_blank');
-      } else {
-        toast.error('Ringtone not available');
-      }
-    } catch {
-      toast.error('Ringtone not available');
-    }
-  };
-
   const handleDownload = async () => {
     const audioUrl = getUrlForQuality(currentSong, preferredQuality) || getAudioUrl(currentSong, preferredQuality);
     if (!audioUrl) { toast.error('No audio URL'); return; }
@@ -85,10 +68,28 @@ const ExpandedPlayer = () => {
     { icon: Mic, action: handleLyrics, label: 'Lyrics', active: false },
     { icon: ListOrdered, action: () => setQueueOpen(true), label: 'Queue', active: false },
     { icon: Heart, action: () => toggleLike(currentSong), label: 'Like', active: liked },
-    { icon: Bell, action: handleRingtone, label: 'Ringtone', active: false },
   ];
 
   const tabs = ['Player', 'Equalizer'];
+
+  // Horizontal swipe to toggle Equalizer tab (high sensitivity)
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    touchStart.current = { x: t.clientX, y: t.clientY };
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const s = touchStart.current;
+    if (!s) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - s.x;
+    const dy = t.clientY - s.y;
+    if (Math.abs(dx) > 30 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+      if (dx < 0) { setShowEqualizer(true); setActiveTab(1); }
+      else { setShowEqualizer(false); setActiveTab(0); }
+    }
+    touchStart.current = null;
+  };
 
   return (
     <motion.div
@@ -96,23 +97,35 @@ const ExpandedPlayer = () => {
       animate={{ y: 0 }}
       exit={{ y: '100%' }}
       transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
       className="fixed inset-0 z-[500] flex flex-col overflow-hidden"
-      style={{
-        background: 'linear-gradient(180deg, hsl(250 20% 8%) 0%, hsl(340 30% 8%) 40%, hsl(25 30% 6%) 70%, hsl(250 22% 4%) 100%)',
-      }}
     >
-      <div className="relative flex-1 flex flex-col items-center px-4 sm:px-8 lg:px-16 pt-5 pb-4 overflow-y-auto">
+      {/* Blurred poster backdrop */}
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{
+          backgroundImage: 'var(--poster-bg, none)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          filter: 'blur(70px) saturate(180%) contrast(1.3) brightness(0.6)',
+          transform: 'scale(1.3)',
+        }}
+      />
+      <div aria-hidden className="absolute inset-0 bg-black/35" />
+      <div className="relative flex-1 flex flex-col items-center px-4 sm:px-8 lg:px-16 pt-5 pb-4 overflow-y-auto z-10">
         <div className="w-10 h-1 rounded-full bg-muted-foreground/30 mb-4 flex-shrink-0" />
 
         {/* Header */}
         <div className="w-full max-w-lg flex items-center justify-between mb-4">
-          <button onClick={() => setExpandedOpen(false)} className="w-10 h-10 rounded-full bg-gradient-to-br from-secondary/50 to-secondary/20 flex items-center justify-center hover:from-secondary/60 transition-all">
+          <button onClick={() => setExpandedOpen(false)} className="w-10 h-10 rounded-full glass-icon flex items-center justify-center">
             <ChevronDown className="w-5 h-5 text-white" />
           </button>
           <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">Now Playing</span>
           <button
             onClick={() => { setShowEqualizer(!showEqualizer); setActiveTab(showEqualizer ? 0 : 1); }}
-            className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${showEqualizer ? 'bg-gradient-to-br from-primary to-primary/70 text-primary-foreground' : 'bg-gradient-to-br from-secondary/50 to-secondary/20 text-white hover:from-secondary/60'}`}
+            className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${showEqualizer ? 'glass-pill bg-primary/70 text-white' : 'glass-icon text-white'}`}
           >
             <Sliders className="w-4 h-4" />
           </button>
@@ -174,23 +187,23 @@ const ExpandedPlayer = () => {
 
                 {/* Controls - gradient buttons */}
                 <div className="flex items-center justify-center gap-4 sm:gap-5 my-3 w-full">
-                  <button onClick={toggleShuffle} className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${shuffle ? 'bg-gradient-to-br from-primary to-primary/60 text-white' : 'bg-gradient-to-br from-white/15 to-white/5 text-white/80 hover:from-white/20'}`}>
+                  <button onClick={toggleShuffle} className={`w-10 h-10 rounded-full flex items-center justify-center transition-all glass-icon ${shuffle ? 'bg-primary/60 text-white' : 'text-white/80'}`}>
                     <Shuffle className="w-4.5 h-4.5" />
                   </button>
-                  <button onClick={playPrev} className="w-12 h-12 rounded-full bg-gradient-to-br from-white/15 to-white/5 flex items-center justify-center text-white hover:from-white/25 transition-all">
+                  <button onClick={playPrev} className="w-12 h-12 rounded-full glass-icon flex items-center justify-center text-white transition-all">
                     <SkipBack className="w-5 h-5" />
                   </button>
                   <motion.button
                     onClick={togglePlay}
                     whileTap={{ scale: 0.95 }}
-                    className="w-[68px] h-[68px] rounded-full flex items-center justify-center text-white bg-gradient-to-br from-primary via-primary/90 to-primary/60"
+                    className="w-[68px] h-[68px] rounded-full glass-pill flex items-center justify-center text-white bg-primary/80"
                   >
                     {isPlaying ? <Pause className="w-7 h-7" /> : <Play className="w-7 h-7 ml-1" />}
                   </motion.button>
-                  <button onClick={playNext} className="w-12 h-12 rounded-full bg-gradient-to-br from-white/15 to-white/5 flex items-center justify-center text-white hover:from-white/25 transition-all">
+                  <button onClick={playNext} className="w-12 h-12 rounded-full glass-icon flex items-center justify-center text-white transition-all">
                     <SkipForward className="w-5 h-5" />
                   </button>
-                  <button onClick={toggleRepeat} className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${repeat ? 'bg-gradient-to-br from-primary to-primary/60 text-white' : 'bg-gradient-to-br from-white/15 to-white/5 text-white/80 hover:from-white/20'}`}>
+                  <button onClick={toggleRepeat} className={`w-10 h-10 rounded-full flex items-center justify-center transition-all glass-icon ${repeat ? 'bg-primary/60 text-white' : 'text-white/80'}`}>
                     <Repeat className="w-4.5 h-4.5" />
                   </button>
                 </div>
@@ -220,10 +233,8 @@ const ExpandedPlayer = () => {
                       <button
                         key={value}
                         onClick={() => setQuality(value)}
-                        className={`px-5 py-2 rounded-xl text-xs font-semibold transition-all ${
-                          preferredQuality === value
-                            ? 'bg-gradient-to-r from-primary to-primary/70 text-white'
-                            : 'bg-gradient-to-br from-white/10 to-white/5 text-white/50 hover:from-white/15'
+                        className={`px-5 py-2 glass-pill text-xs font-semibold transition-all ${
+                          preferredQuality === value ? 'bg-primary/70 text-white' : 'text-white/70'
                         }`}
                       >
                         {label}
@@ -236,7 +247,7 @@ const ExpandedPlayer = () => {
                 <motion.button
                   onClick={handleDownload}
                   whileTap={{ scale: 0.98 }}
-                  className="mt-4 mb-6 w-full py-3.5 rounded-2xl text-white font-bold text-sm flex items-center justify-center gap-2 bg-gradient-to-r from-primary via-primary/90 to-primary/60 flex-shrink-0"
+                  className="mt-4 mb-6 w-full py-3.5 glass-pill text-white font-bold text-sm flex items-center justify-center gap-2 bg-primary/70 flex-shrink-0"
                 >
                   <Download className="w-4 h-4" /> Download Song
                 </motion.button>

@@ -56,7 +56,7 @@ const HindiSongsSection = () => {
             <Music className="w-4 h-4 text-white" />
           </div>
           <h2 className="text-base font-bold text-foreground" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-            🎶 Hindi Hits
+            Hindi Hits
           </h2>
         </div>
       </div>
