@@ -7,7 +7,6 @@ import TopBar from "@/components/TopBar";
 import PlayerBar from "@/components/PlayerBar";
 import ExpandedPlayer from "@/components/ExpandedPlayer";
 import QueuePanel from "@/components/QueuePanel";
-import Particles from "@/components/Particles";
 import LiquidBackground from "@/components/LiquidBackground";
 import Index from "./pages/Index";
 import SearchPage from "./pages/SearchPage";
@@ -35,7 +34,6 @@ const App = () => (
         <Sonner position="top-center" />
         <HashRouter>
           <LiquidBackground />
-          <Particles />
           <div className="min-h-screen max-w-[600px] lg:max-w-[1100px] mx-auto relative flex flex-col z-10">
             <TopBar />
             <main className="flex-1">

@@ -25,6 +25,7 @@ const ExpandedPlayer = () => {
   const navigate = useNavigate();
   const [showEqualizer, setShowEqualizer] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
 
   if (!expandedOpen || !currentSong) return null;
 
@@ -73,7 +74,6 @@ const ExpandedPlayer = () => {
   const tabs = ['Player', 'Equalizer'];
 
   // Horizontal swipe to toggle Equalizer tab (high sensitivity)
-  const touchStart = useRef<{ x: number; y: number } | null>(null);
   const onTouchStart = (e: React.TouchEvent) => {
     const t = e.touches[0];
     touchStart.current = { x: t.clientX, y: t.clientY };
@@ -176,8 +176,8 @@ const ExpandedPlayer = () => {
 
                 {/* Progress */}
                 <div className="w-full mb-2">
-                  <div className="w-full h-1.5 bg-secondary/30 rounded-full cursor-pointer overflow-hidden" onClick={handleProgressClick}>
-                    <motion.div className="h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
+                  <div className="w-full h-2 neon-track rounded-full cursor-pointer overflow-hidden" onClick={handleProgressClick}>
+                    <motion.div className="h-full rounded-full neon-progress" style={{ width: `${pct}%` }} />
                   </div>
                   <div className="flex justify-between text-[10px] mt-2" style={{ color: 'hsl(45, 95%, 65%)' }}>
                     <span>{fmtTime(currentTime)}</span>

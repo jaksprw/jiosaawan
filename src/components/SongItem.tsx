@@ -60,15 +60,18 @@ const SongItem = ({ song, songList, songIdx = -1, showMeta = true }: SongItemPro
   return (
     <div
       onClick={handleClick}
-      className={`group flex items-center gap-3 rounded-xl cursor-pointer transition-all duration-200 active:scale-[0.98] px-2.5 py-2 ${
+      className={`group flex items-center gap-3 rounded-full cursor-pointer transition-all duration-200 active:scale-[0.98] px-3 py-2.5 border ${
         isActive
-          ? 'ring-1 ring-primary/30 shadow-md shadow-primary/10'
-          : 'hover:translate-x-0.5'
+          ? 'border-primary/40 shadow-[0_0_18px_hsla(25,100%,60%,0.25)]'
+          : 'border-white/10 hover:border-white/20'
       }`}
       style={{
-        background: isActive
-          ? 'linear-gradient(135deg, hsla(25, 80%, 50%, 0.15), hsla(340, 70%, 45%, 0.12), hsla(250, 30%, 20%, 0.2))'
-          : 'linear-gradient(135deg, hsla(250, 20%, 14%, 0.5), hsla(250, 18%, 12%, 0.4))',
+        background: 'hsla(0, 0%, 100%, 0.04)',
+        backdropFilter: 'blur(18px) saturate(160%)',
+        WebkitBackdropFilter: 'blur(18px) saturate(160%)',
+        boxShadow: isActive
+          ? 'inset 0 1px 0 hsla(0,0%,100%,0.15), 0 6px 18px -8px hsla(0,0%,0%,0.5)'
+          : 'inset 0 1px 0 hsla(0,0%,100%,0.10), 0 4px 14px -8px hsla(0,0%,0%,0.55)',
       }}
     >
       <div className="relative flex-shrink-0">
