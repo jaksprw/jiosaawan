@@ -415,10 +415,37 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const onEnded = () => {
       if (!repeat) playNextInternal();
     };
-    const onError = () => {
-      toast.error('Audio error — trying next');
-      setTimeout(playNextInternal, 1000);
+    let retryCount = 0;
+    let stalledTimer: any = null;
+    const tryReload = () => {
+      try {
+        const t = audio.currentTime;
+        audio.load();
+        audio.currentTime = t;
+        audio.play().catch(() => {});
+      } catch {}
     };
+    const onError = () => {
+      if (retryCount < 2) {
+        retryCount++;
+        toast.info('Network glitch — retrying…');
+        setTimeout(tryReload, 800);
+      } else {
+        retryCount = 0;
+        toast.error('Skipping to next');
+        setTimeout(playNextInternal, 500);
+      }
+    };
+    const onStalled = () => {
+      if (stalledTimer) return;
+      stalledTimer = setTimeout(() => {
+        stalledTimer = null;
+        if (audio.readyState < 3) tryReload();
+      }, 4000);
+    };
+    const onWaiting = onStalled;
+    const onPlaying = () => { retryCount = 0; if (stalledTimer) { clearTimeout(stalledTimer); stalledTimer = null; } };
+    const onOnline = () => { if (audio && audio.paused && currentSong) tryReload(); };
 
     audio.addEventListener('timeupdate', onTimeUpdate);
     audio.addEventListener('loadedmetadata', onLoadedMetadata);
@@ -426,6 +453,10 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     audio.addEventListener('pause', onPause);
     audio.addEventListener('ended', onEnded);
     audio.addEventListener('error', onError);
+    audio.addEventListener('stalled', onStalled);
+    audio.addEventListener('waiting', onWaiting);
+    audio.addEventListener('playing', onPlaying);
+    window.addEventListener('online', onOnline);
 
     return () => {
       audio.removeEventListener('timeupdate', onTimeUpdate);
@@ -434,6 +465,11 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       audio.removeEventListener('pause', onPause);
       audio.removeEventListener('ended', onEnded);
       audio.removeEventListener('error', onError);
+      audio.removeEventListener('stalled', onStalled);
+      audio.removeEventListener('waiting', onWaiting);
+      audio.removeEventListener('playing', onPlaying);
+      window.removeEventListener('online', onOnline);
+      if (stalledTimer) clearTimeout(stalledTimer);
     };
   }, [repeat, shuffle, queue, initAudioContext]);
 
