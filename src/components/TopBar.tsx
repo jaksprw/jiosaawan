@@ -87,20 +87,24 @@ const TopBar = () => {
   return (
     <header
       ref={headerRef}
-      className={`sticky top-0 z-[100] border-b border-border/20 px-4 transition-all duration-300 ${
+      className={`sticky top-0 z-[100] border-b border-white/10 px-4 transition-all duration-300 ${
         hidden ? '-translate-y-full' : 'translate-y-0'
       }`}
-      style={{ background: 'hsla(250, 20%, 8%, 0.92)' }}
+      style={{
+        background: 'hsla(250, 20%, 6%, 0.55)',
+        backdropFilter: 'blur(28px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(28px) saturate(180%)',
+      }}
     >
       {/* Logo + Search + Profile in one row */}
       <div className={`transition-all duration-300 overflow-hidden ${hidden ? 'max-h-0 py-0' : 'max-h-16 py-2.5'}`}>
         <div className="flex items-center gap-2 flex-nowrap">
           <div className="flex-shrink-0 cursor-pointer" onClick={() => navigate('/')}>
-            <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center btn-3d">
+            <div className="w-8 h-8 rounded-xl glass-icon bg-primary/60 flex items-center justify-center">
               <Headphones className="w-4 h-4 text-primary-foreground" />
             </div>
           </div>
-          <div className="flex-1 min-w-0 flex items-center rounded-lg overflow-hidden" style={{ background: 'hsla(250, 18%, 16%, 0.7)' }}>
+          <div className="flex-1 min-w-0 flex items-center rounded-full overflow-hidden glass-icon">
             <Search className="w-3.5 h-3.5 text-muted-foreground ml-3 flex-shrink-0" />
             <input
               type="text"
@@ -118,10 +122,9 @@ const TopBar = () => {
           </div>
           <button
             onClick={() => navigate('/profile')}
-            className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
-              location.pathname === '/profile' ? 'btn-3d-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
+            className={`flex-shrink-0 w-8 h-8 rounded-xl glass-icon flex items-center justify-center transition-all ${
+              location.pathname === '/profile' ? 'bg-primary/70 text-white' : 'text-muted-foreground hover:text-foreground'
             }`}
-            style={location.pathname !== '/profile' ? { background: 'hsla(250, 18%, 16%, 0.7)' } : undefined}
           >
             <User className="w-4 h-4" />
           </button>
@@ -134,12 +137,11 @@ const TopBar = () => {
           <button
             key={tab.id}
             onClick={() => handleTabClick(tab)}
-            className={`rounded-lg px-3 py-1.5 text-xs font-semibold whitespace-nowrap flex items-center gap-1.5 transition-all duration-200 ${
+            className={`glass-pill px-3 py-1.5 text-xs font-semibold whitespace-nowrap flex items-center gap-1.5 transition-all duration-200 ${
               activeTab === tab.id
-                ? 'btn-3d-primary text-primary-foreground'
+                ? 'bg-primary/70 text-white'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
-            style={activeTab !== tab.id ? { background: 'hsla(250, 18%, 16%, 0.5)' } : undefined}
           >
             <tab.icon className="w-3.5 h-3.5" />
             {tab.label}
