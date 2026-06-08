@@ -30,8 +30,8 @@ const PlayerBar = () => {
       className="fixed bottom-0 left-0 right-0 z-[200] max-w-[800px] mx-auto"
     >
       {/* Progress line */}
-      <div className="w-full h-[2px] bg-secondary/30 cursor-pointer" onClick={handleProgressClick}>
-        <motion.div className="h-full bg-primary" style={{ width: `${pct}%` }} />
+      <div className="w-full h-[3px] neon-track cursor-pointer mx-2 rounded-full overflow-hidden" onClick={handleProgressClick}>
+        <motion.div className="h-full neon-progress" style={{ width: `${pct}%` }} />
       </div>
 
       <div className="glass-card mx-2 mb-2 rounded-3xl px-3 pt-2.5 pb-2 border-t border-white/10">
