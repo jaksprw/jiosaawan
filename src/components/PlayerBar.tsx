@@ -34,7 +34,7 @@ const PlayerBar = () => {
         <motion.div className="h-full bg-primary" style={{ width: `${pct}%` }} />
       </div>
 
-      <div className="bg-background/95 border-t border-border/10 px-3 pt-2.5 pb-2">
+      <div className="glass-card mx-2 mb-2 rounded-3xl px-3 pt-2.5 pb-2 border-t border-white/10">
         <div className="flex items-center gap-3">
           {/* Album art + expand button */}
           <div className="relative cursor-pointer" onClick={() => setExpandedOpen(true)}>
@@ -66,13 +66,13 @@ const PlayerBar = () => {
             <button onClick={toggleShuffle} className={`p-1.5 rounded-full transition-all ${shuffle ? 'text-primary' : 'text-white/80'}`}>
               <Shuffle className="w-3.5 h-3.5" />
             </button>
-            <button onClick={playPrev} className="p-1.5 text-white hover:text-white transition-colors">
+            <button onClick={playPrev} className="p-1.5 text-white transition-colors">
               <SkipBack className="w-4 h-4" />
             </button>
             <motion.button
               onClick={togglePlay}
               whileTap={{ scale: 0.9 }}
-              className="w-10 h-10 rounded-full flex items-center justify-center text-primary-foreground bg-primary"
+              className="w-10 h-10 glass-pill flex items-center justify-center text-white bg-primary/80"
             >
               {isPlaying ? <Pause className="w-4.5 h-4.5" /> : <Play className="w-4.5 h-4.5 ml-0.5" />}
             </motion.button>
