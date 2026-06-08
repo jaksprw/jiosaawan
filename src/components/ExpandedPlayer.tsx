@@ -187,23 +187,23 @@ const ExpandedPlayer = () => {
 
                 {/* Controls - gradient buttons */}
                 <div className="flex items-center justify-center gap-4 sm:gap-5 my-3 w-full">
-                  <button onClick={toggleShuffle} className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${shuffle ? 'bg-gradient-to-br from-primary to-primary/60 text-white' : 'bg-gradient-to-br from-white/15 to-white/5 text-white/80 hover:from-white/20'}`}>
+                  <button onClick={toggleShuffle} className={`w-10 h-10 rounded-full flex items-center justify-center transition-all glass-icon ${shuffle ? 'bg-primary/60 text-white' : 'text-white/80'}`}>
                     <Shuffle className="w-4.5 h-4.5" />
                   </button>
-                  <button onClick={playPrev} className="w-12 h-12 rounded-full bg-gradient-to-br from-white/15 to-white/5 flex items-center justify-center text-white hover:from-white/25 transition-all">
+                  <button onClick={playPrev} className="w-12 h-12 rounded-full glass-icon flex items-center justify-center text-white transition-all">
                     <SkipBack className="w-5 h-5" />
                   </button>
                   <motion.button
                     onClick={togglePlay}
                     whileTap={{ scale: 0.95 }}
-                    className="w-[68px] h-[68px] rounded-full flex items-center justify-center text-white bg-gradient-to-br from-primary via-primary/90 to-primary/60"
+                    className="w-[68px] h-[68px] rounded-full glass-pill flex items-center justify-center text-white bg-primary/80"
                   >
                     {isPlaying ? <Pause className="w-7 h-7" /> : <Play className="w-7 h-7 ml-1" />}
                   </motion.button>
-                  <button onClick={playNext} className="w-12 h-12 rounded-full bg-gradient-to-br from-white/15 to-white/5 flex items-center justify-center text-white hover:from-white/25 transition-all">
+                  <button onClick={playNext} className="w-12 h-12 rounded-full glass-icon flex items-center justify-center text-white transition-all">
                     <SkipForward className="w-5 h-5" />
                   </button>
-                  <button onClick={toggleRepeat} className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${repeat ? 'bg-gradient-to-br from-primary to-primary/60 text-white' : 'bg-gradient-to-br from-white/15 to-white/5 text-white/80 hover:from-white/20'}`}>
+                  <button onClick={toggleRepeat} className={`w-10 h-10 rounded-full flex items-center justify-center transition-all glass-icon ${repeat ? 'bg-primary/60 text-white' : 'text-white/80'}`}>
                     <Repeat className="w-4.5 h-4.5" />
                   </button>
                 </div>
@@ -233,10 +233,8 @@ const ExpandedPlayer = () => {
                       <button
                         key={value}
                         onClick={() => setQuality(value)}
-                        className={`px-5 py-2 rounded-xl text-xs font-semibold transition-all ${
-                          preferredQuality === value
-                            ? 'bg-gradient-to-r from-primary to-primary/70 text-white'
-                            : 'bg-gradient-to-br from-white/10 to-white/5 text-white/50 hover:from-white/15'
+                        className={`px-5 py-2 glass-pill text-xs font-semibold transition-all ${
+                          preferredQuality === value ? 'bg-primary/70 text-white' : 'text-white/70'
                         }`}
                       >
                         {label}
@@ -249,7 +247,7 @@ const ExpandedPlayer = () => {
                 <motion.button
                   onClick={handleDownload}
                   whileTap={{ scale: 0.98 }}
-                  className="mt-4 mb-6 w-full py-3.5 rounded-2xl text-white font-bold text-sm flex items-center justify-center gap-2 bg-gradient-to-r from-primary via-primary/90 to-primary/60 flex-shrink-0"
+                  className="mt-4 mb-6 w-full py-3.5 glass-pill text-white font-bold text-sm flex items-center justify-center gap-2 bg-primary/70 flex-shrink-0"
                 >
                   <Download className="w-4 h-4" /> Download Song
                 </motion.button>
