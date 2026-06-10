@@ -70,7 +70,7 @@ const PlayerBar = () => {
             <motion.button
               onClick={togglePlay}
               whileTap={{ scale: 0.9 }}
-              className="w-10 h-10 rounded-[10px] flex items-center justify-center text-white bg-primary/80 border border-white/15"
+              className="w-10 h-10 rounded-full flex items-center justify-center text-white bg-primary/80 border border-white/15"
             >
               {isPlaying ? <Pause className="w-4.5 h-4.5" /> : <Play className="w-4.5 h-4.5 ml-0.5" />}
             </motion.button>
