@@ -163,8 +163,13 @@ const ExpandedPlayer = () => {
                   <img
                     src={imgUrl}
                     alt=""
-                    className={`w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 rounded-full object-cover border-[3px] border-secondary/30 ${isPlaying ? 'animate-spin' : ''}`}
-                    style={{ animationDuration: '8s' }}
+                    className="w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 object-cover"
+                    style={{
+                      borderRadius: '10px',
+                      border: '1px solid hsla(0,0%,100%,0.18)',
+                      boxShadow:
+                        '0 24px 60px -16px hsla(0,0%,0%,0.85), 0 6px 20px -8px hsla(0,0%,0%,0.7), inset 0 1px 0 hsla(0,0%,100%,0.18), inset 0 -2px 6px hsla(0,0%,0%,0.55)',
+                    }}
                   />
                 </div>
 
@@ -187,23 +192,23 @@ const ExpandedPlayer = () => {
 
                 {/* Controls - gradient buttons */}
                 <div className="flex items-center justify-center gap-4 sm:gap-5 my-3 w-full">
-                  <button onClick={toggleShuffle} className={`w-10 h-10 rounded-full flex items-center justify-center transition-all glass-icon ${shuffle ? 'bg-primary/60 text-white' : 'text-white/80'}`}>
+                  <button onClick={toggleShuffle} className={`w-10 h-10 rounded-[10px] flex items-center justify-center transition-all glass-icon ${shuffle ? 'bg-primary/60 text-white border border-black/50' : 'text-white/80'}`}>
                     <Shuffle className="w-4.5 h-4.5" />
                   </button>
-                  <button onClick={playPrev} className="w-12 h-12 rounded-full glass-icon flex items-center justify-center text-white transition-all">
+                  <button onClick={playPrev} className="w-12 h-12 rounded-[10px] glass-icon flex items-center justify-center text-white transition-all">
                     <SkipBack className="w-5 h-5" />
                   </button>
                   <motion.button
                     onClick={togglePlay}
                     whileTap={{ scale: 0.95 }}
-                    className="w-[68px] h-[68px] rounded-full glass-pill flex items-center justify-center text-white bg-primary/80"
+                    className="w-[68px] h-[68px] rounded-[10px] glass-pill flex items-center justify-center text-white bg-primary/80 border border-black/40"
                   >
                     {isPlaying ? <Pause className="w-7 h-7" /> : <Play className="w-7 h-7 ml-1" />}
                   </motion.button>
-                  <button onClick={playNext} className="w-12 h-12 rounded-full glass-icon flex items-center justify-center text-white transition-all">
+                  <button onClick={playNext} className="w-12 h-12 rounded-[10px] glass-icon flex items-center justify-center text-white transition-all">
                     <SkipForward className="w-5 h-5" />
                   </button>
-                  <button onClick={toggleRepeat} className={`w-10 h-10 rounded-full flex items-center justify-center transition-all glass-icon ${repeat ? 'bg-primary/60 text-white' : 'text-white/80'}`}>
+                  <button onClick={toggleRepeat} className={`w-10 h-10 rounded-[10px] flex items-center justify-center transition-all glass-icon ${repeat ? 'bg-primary/60 text-white border border-black/50' : 'text-white/80'}`}>
                     <Repeat className="w-4.5 h-4.5" />
                   </button>
                 </div>
