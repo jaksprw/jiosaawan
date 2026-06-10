@@ -1,6 +1,6 @@
 import { usePlayer } from '@/contexts/PlayerContext';
 import { getImg, getArtistStr, fmtTime, decodeHtml } from '@/lib/api';
-import { Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, X, ChevronUp } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, X, ChevronUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 import WaveBars from './WaveBars';
 
@@ -8,7 +8,6 @@ const PlayerBar = () => {
   const {
     currentSong, isPlaying, togglePlay, playNext, playPrev,
     currentTime, duration, seek,
-    shuffle, toggleShuffle, repeat, toggleRepeat,
     setExpandedOpen, stopPlayer,
   } = usePlayer();
 
@@ -29,19 +28,21 @@ const PlayerBar = () => {
       animate={{ y: 0, opacity: 1 }}
       className="fixed bottom-0 left-0 right-0 z-[200] max-w-[800px] mx-auto"
     >
-      {/* Progress line */}
-      <div className="w-full h-[3px] neon-track cursor-pointer mx-2 rounded-full overflow-hidden" onClick={handleProgressClick}>
-        <motion.div className="h-full neon-progress" style={{ width: `${pct}%` }} />
-      </div>
-
-      <div className="glass-card mx-2 mb-2 rounded-3xl px-3 pt-2.5 pb-2 border-t border-white/10">
+      <div
+        className="mx-2 mb-2 rounded-[10px] px-3 pt-2.5 pb-2 border border-white/10"
+        style={{
+          background: 'hsla(0, 0%, 0%, 0.55)',
+          backdropFilter: 'blur(22px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(22px) saturate(180%)',
+        }}
+      >
         <div className="flex items-center gap-3">
           {/* Album art + expand button */}
           <div className="relative cursor-pointer" onClick={() => setExpandedOpen(true)}>
             <img
               src={imgUrl}
               alt=""
-              className="w-12 h-12 rounded-full object-cover border-2 border-primary/20"
+              className="w-12 h-12 rounded-[10px] object-cover border border-white/15"
             />
             {isPlaying && (
               <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 scale-50">
@@ -63,24 +64,18 @@ const PlayerBar = () => {
 
           {/* Controls */}
           <div className="flex items-center gap-0.5">
-            <button onClick={toggleShuffle} className={`p-1.5 rounded-full transition-all ${shuffle ? 'text-primary' : 'text-white/80'}`}>
-              <Shuffle className="w-3.5 h-3.5" />
-            </button>
             <button onClick={playPrev} className="p-1.5 text-white transition-colors">
               <SkipBack className="w-4 h-4" />
             </button>
             <motion.button
               onClick={togglePlay}
               whileTap={{ scale: 0.9 }}
-              className="w-10 h-10 glass-pill flex items-center justify-center text-white bg-primary/80"
+              className="w-10 h-10 rounded-[10px] flex items-center justify-center text-white bg-primary/80 border border-white/15"
             >
               {isPlaying ? <Pause className="w-4.5 h-4.5" /> : <Play className="w-4.5 h-4.5 ml-0.5" />}
             </motion.button>
             <button onClick={playNext} className="p-1.5 text-white hover:text-white transition-colors">
               <SkipForward className="w-4 h-4" />
-            </button>
-            <button onClick={toggleRepeat} className={`p-1.5 rounded-full transition-all ${repeat ? 'text-primary' : 'text-white/80'}`}>
-              <Repeat className="w-3.5 h-3.5" />
             </button>
             <button onClick={stopPlayer} className="p-1 text-white/60 hover:text-white transition-colors">
               <X className="w-3.5 h-3.5" />
@@ -88,10 +83,17 @@ const PlayerBar = () => {
           </div>
         </div>
 
-        {/* Time */}
-        <div className="flex justify-between text-[9px] mt-1 px-0.5" style={{ color: 'hsl(45, 95%, 65%)', opacity: 0.5 }}>
-          <span>{fmtTime(currentTime)}</span>
-          <span>{fmtTime(duration)}</span>
+        {/* Time + progress bar in between */}
+        <div className="flex items-center gap-2 mt-1.5 px-0.5">
+          <span className="text-[9px] tabular-nums text-white/60 w-8 text-right">{fmtTime(currentTime)}</span>
+          <div
+            className="flex-1 h-1 rounded-full overflow-hidden cursor-pointer"
+            style={{ background: 'hsla(0,0%,100%,0.12)' }}
+            onClick={handleProgressClick}
+          >
+            <div className="h-full bg-primary rounded-full transition-[width] duration-150" style={{ width: `${pct}%` }} />
+          </div>
+          <span className="text-[9px] tabular-nums text-white/60 w-8">{fmtTime(duration)}</span>
         </div>
       </div>
     </motion.div>
