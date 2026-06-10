@@ -22,6 +22,7 @@ import ChartsPage from "./pages/ChartsPage";
 import RadioPage from "./pages/RadioPage";
 import RadioDetail from "./pages/RadioDetail";
 import ChannelDetail from "./pages/ChannelDetail";
+import WatchParty from "./pages/WatchParty";
 
 import NotFound from "./pages/NotFound";
 
@@ -54,7 +55,7 @@ const App = () => (
                 <Route path="/radio" element={<RadioPage />} />
                 <Route path="/radio/:id" element={<RadioDetail />} />
                 <Route path="/channel/:id" element={<ChannelDetail />} />
-                
+                <Route path="/watch-party" element={<WatchParty />} />
                 <Route path="/lyrics" element={<LyricsPage />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="*" element={<NotFound />} />
