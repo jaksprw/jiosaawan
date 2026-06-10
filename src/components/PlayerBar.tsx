@@ -87,11 +87,18 @@ const PlayerBar = () => {
         <div className="flex items-center gap-2 mt-1.5 px-0.5">
           <span className="text-[9px] tabular-nums text-white/60 w-8 text-right">{fmtTime(currentTime)}</span>
           <div
-            className="flex-1 h-1 rounded-full overflow-hidden cursor-pointer"
-            style={{ background: 'hsla(0,0%,100%,0.12)' }}
+            className="flex-1 h-1.5 rounded-full overflow-hidden cursor-pointer"
+            style={{ background: 'hsla(0,0%,100%,0.14)' }}
             onClick={handleProgressClick}
           >
-            <div className="h-full bg-primary rounded-full transition-[width] duration-150" style={{ width: `${pct}%` }} />
+            <div
+              className="h-full rounded-full transition-[width] duration-150"
+              style={{
+                width: `${pct}%`,
+                background: 'hsl(var(--primary))',
+                boxShadow: '0 0 8px hsl(var(--primary) / 0.7)',
+              }}
+            />
           </div>
           <span className="text-[9px] tabular-nums text-white/60 w-8">{fmtTime(duration)}</span>
         </div>
