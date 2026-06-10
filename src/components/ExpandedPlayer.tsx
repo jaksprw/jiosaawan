@@ -113,7 +113,9 @@ const ExpandedPlayer = () => {
           transform: 'scale(1.3)',
         }}
       />
-      <div aria-hidden className="absolute inset-0 bg-black/35" />
+      {/* Half black initial overlay for legibility */}
+      <div aria-hidden className="absolute inset-0 bg-black/60" />
+      <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/30 to-black/70" />
       <div className="relative flex-1 flex flex-col items-center px-4 sm:px-8 lg:px-16 pt-5 pb-4 overflow-y-auto z-10">
         <div className="w-10 h-1 rounded-full bg-muted-foreground/30 mb-4 flex-shrink-0" />
 
