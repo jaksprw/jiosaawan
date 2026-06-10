@@ -60,18 +60,16 @@ const SongItem = ({ song, songList, songIdx = -1, showMeta = true }: SongItemPro
   return (
     <div
       onClick={handleClick}
-      className={`group flex items-center gap-3 rounded-full cursor-pointer transition-all duration-200 active:scale-[0.98] px-3 py-2.5 border ${
+      className={`group flex items-center gap-3 rounded-[10px] cursor-pointer transition-all duration-200 active:scale-[0.98] px-3 py-2.5 border ${
         isActive
-          ? 'border-primary/40 shadow-[0_0_18px_hsla(25,100%,60%,0.25)]'
+          ? 'border-primary/50 shadow-[0_0_18px_hsla(25,100%,60%,0.25)]'
           : 'border-white/10 hover:border-white/20'
       }`}
       style={{
-        background: 'hsla(0, 0%, 100%, 0.04)',
-        backdropFilter: 'blur(18px) saturate(160%)',
-        WebkitBackdropFilter: 'blur(18px) saturate(160%)',
+        background: isActive ? 'hsla(0, 0%, 0%, 0.55)' : 'hsla(0, 0%, 0%, 0.42)',
         boxShadow: isActive
-          ? 'inset 0 1px 0 hsla(0,0%,100%,0.15), 0 6px 18px -8px hsla(0,0%,0%,0.5)'
-          : 'inset 0 1px 0 hsla(0,0%,100%,0.10), 0 4px 14px -8px hsla(0,0%,0%,0.55)',
+          ? 'inset 0 1px 0 hsla(0,0%,100%,0.12), 0 6px 18px -8px hsla(0,0%,0%,0.55)'
+          : 'inset 0 1px 0 hsla(0,0%,100%,0.08), 0 4px 14px -8px hsla(0,0%,0%,0.55)',
       }}
     >
       <div className="relative flex-shrink-0">
@@ -80,16 +78,16 @@ const SongItem = ({ song, songList, songIdx = -1, showMeta = true }: SongItemPro
             src={imgUrl}
             alt={decodeHtml(song.name || '')}
             loading="lazy"
-            className={`w-12 h-12 sm:w-14 sm:h-14 rounded-lg object-cover ${isActive ? 'ring-2 ring-primary/40' : ''}`}
+            className={`w-12 h-12 sm:w-14 sm:h-14 rounded-[10px] object-cover ${isActive ? 'ring-2 ring-primary/40' : ''}`}
             onError={(e) => { (e.target as HTMLImageElement).src = ''; }}
           />
         ) : (
-          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg bg-secondary flex items-center justify-center">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-[10px] bg-secondary flex items-center justify-center">
             <Music className="w-5 h-5 text-muted-foreground/40" />
           </div>
         )}
         {isActive && isPlaying && (
-          <div className="absolute inset-0 rounded-lg bg-black/30 flex items-center justify-center">
+          <div className="absolute inset-0 rounded-[10px] bg-black/30 flex items-center justify-center">
             <WaveBars />
           </div>
         )}
