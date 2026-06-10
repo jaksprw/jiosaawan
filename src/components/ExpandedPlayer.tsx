@@ -162,15 +162,24 @@ const ExpandedPlayer = () => {
               <motion.div key="player" initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 50 }} className="w-full flex flex-col items-center">
                 {/* Album Art */}
                 <div className="relative mb-6">
-                  <img
+                  <motion.img
+                    animate={isPlaying ? { rotate: 360 } : { rotate: 0 }}
+                    transition={isPlaying ? { repeat: Infinity, ease: 'linear', duration: 18 } : { duration: 0.4 }}
                     src={imgUrl}
                     alt=""
-                    className="w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 object-cover"
+                    className="w-56 h-56 sm:w-64 sm:h-64 lg:w-72 lg:h-72 object-cover rounded-full"
                     style={{
-                      borderRadius: '10px',
-                      border: '1px solid hsla(0,0%,100%,0.18)',
+                      border: '3px solid hsla(0,0%,0%,0.85)',
                       boxShadow:
-                        '0 24px 60px -16px hsla(0,0%,0%,0.85), 0 6px 20px -8px hsla(0,0%,0%,0.7), inset 0 1px 0 hsla(0,0%,100%,0.18), inset 0 -2px 6px hsla(0,0%,0%,0.55)',
+                        '0 30px 70px -10px hsla(0,0%,0%,0.95), 0 10px 30px -6px hsla(0,0%,0%,0.85), inset 0 0 0 6px hsla(0,0%,0%,0.55), inset 0 0 0 8px hsla(0,0%,100%,0.06), inset 0 0 30px hsla(0,0%,0%,0.6)',
+                    }}
+                  />
+                  {/* Cassette center hole */}
+                  <div
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 rounded-full pointer-events-none"
+                    style={{
+                      background: 'radial-gradient(circle, hsla(0,0%,0%,0.95) 0%, hsla(0,0%,0%,0.7) 60%, transparent 100%)',
+                      boxShadow: '0 0 0 2px hsla(0,0%,100%,0.18), inset 0 0 6px hsla(0,0%,0%,0.95)',
                     }}
                   />
                 </div>
@@ -182,14 +191,12 @@ const ExpandedPlayer = () => {
                 <p className="text-sm text-center mb-5" style={{ color: 'hsl(190, 80%, 60%)' }}>{getArtistStr(currentSong) || '—'}</p>
 
                 {/* Progress */}
-                <div className="w-full mb-2">
-                  <div className="w-full h-2 neon-track rounded-full cursor-pointer overflow-hidden" onClick={handleProgressClick}>
+                <div className="w-full mb-2 flex items-center gap-2">
+                  <span className="text-[10px] tabular-nums w-10 text-right" style={{ color: 'hsl(45, 95%, 65%)' }}>{fmtTime(currentTime)}</span>
+                  <div className="flex-1 h-2 neon-track rounded-full cursor-pointer overflow-hidden" onClick={handleProgressClick}>
                     <motion.div className="h-full rounded-full neon-progress" style={{ width: `${pct}%` }} />
                   </div>
-                  <div className="flex justify-between text-[10px] mt-2" style={{ color: 'hsl(45, 95%, 65%)' }}>
-                    <span>{fmtTime(currentTime)}</span>
-                    <span>{fmtTime(duration)}</span>
-                  </div>
+                  <span className="text-[10px] tabular-nums w-10" style={{ color: 'hsl(45, 95%, 65%)' }}>{fmtTime(duration)}</span>
                 </div>
 
                 {/* Controls - gradient buttons */}
