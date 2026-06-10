@@ -413,7 +413,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     };
     const onPause = () => setIsPlaying(false);
     const onEnded = () => {
-      if (!repeat) playNextInternal();
+      if (!repeat) playNextRef.current?.();
     };
     let retryCount = 0;
     let stalledTimer: any = null;
@@ -433,7 +433,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       } else {
         retryCount = 0;
         toast.error('Skipping to next');
-        setTimeout(playNextInternal, 500);
+        setTimeout(() => playNextRef.current?.(), 500);
       }
     };
     const onStalled = () => {
@@ -471,7 +471,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       window.removeEventListener('online', onOnline);
       if (stalledTimer) clearTimeout(stalledTimer);
     };
-  }, [repeat, shuffle, queue, initAudioContext]);
+  }, [repeat, initAudioContext]);
 
   const playNextInternal = useCallback(() => {
     if (queue.length === 0) return;
@@ -488,6 +488,10 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setQueueIdx(nextIdx);
     loadSong(queue[nextIdx]);
   }, [queue, queueIdx, shuffle, currentSong]);
+
+  // Always-fresh ref so audio event listeners never see stale closures
+  const playNextRef = useRef<() => void>(() => {});
+  useEffect(() => { playNextRef.current = playNextInternal; }, [playNextInternal]);
 
   const loadSong = async (song: any) => {
     const audio = audioRef.current;
